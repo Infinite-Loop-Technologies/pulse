@@ -1,0 +1,96 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 36 33% 96%;
+    --foreground: 216 29% 13%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 216 29% 13%;
+
+    --primary: 170 65% 30%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 29 92% 92%;
+    --secondary-foreground: 24 34% 20%;
+
+    --muted: 210 31% 93%;
+    --muted-foreground: 215 18% 42%;
+
+    --accent: 174 42% 93%;
+    --accent-foreground: 172 72% 20%;
+
+    --destructive: 0 72% 52%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 212 32% 85%;
+    --input: 212 32% 85%;
+    --ring: 170 65% 30%;
+    --radius: 0.8rem;
+  }
+
+  .dark {
+    --background: 222 38% 9%;
+    --foreground: 210 35% 95%;
+
+    --card: 222 31% 12%;
+    --card-foreground: 210 35% 95%;
+
+    --primary: 170 76% 42%;
+    --primary-foreground: 222 40% 8%;
+
+    --secondary: 222 24% 17%;
+    --secondary-foreground: 210 28% 90%;
+
+    --muted: 222 24% 16%;
+    --muted-foreground: 215 16% 68%;
+
+    --accent: 220 22% 18%;
+    --accent-foreground: 176 68% 78%;
+
+    --destructive: 2 77% 62%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 23% 24%;
+    --input: 220 23% 24%;
+    --ring: 170 76% 42%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body,
+  #root {
+    @apply min-h-screen;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+    font-family: "Space Grotesk", ui-sans-serif, sans-serif;
+  }
+}
+
+@layer utilities {
+  @keyframes icon-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-2px);
+    }
+  }
+
+  .icon-float {
+    animation: icon-float 1.9s ease-in-out infinite;
+  }
+}

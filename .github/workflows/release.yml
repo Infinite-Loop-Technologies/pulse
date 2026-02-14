@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile=false
+
+      - name: Build UI
+        run: pnpm --dir apps/ui build
+
+      - name: Build Shell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/cargo-with-cef-env.ps1 build -p pulse-shell --release
+
+      - name: Package with Velopack (placeholder)
+        run: |
+          Write-Host "Integrate Velopack CLI here."
+          Write-Host "Expected output: installer + update packages."
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: pulse-windows
+          path: |
+            target/release/**
+            apps/ui/dist/**

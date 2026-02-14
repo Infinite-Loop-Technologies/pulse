@@ -1,0 +1,13 @@
+{
+    "name": "pulse",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Pulse monorepo",
+    "scripts": {
+        "dev": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/dev.ps1",
+        "dev:ui": "pnpm --dir apps/ui dev",
+    "dev:shell": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/cargo-with-cef-env.ps1 run -p pulse-shell -- --pulse-ui-url http://localhost:5173 --pulse-content-url https://www.microsoft.com/edge",
+        "build": "pnpm --dir apps/ui build && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/cargo-with-cef-env.ps1 build -p pulse-shell --release",
+        "check": "pnpm --dir apps/ui lint && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/cargo-with-cef-env.ps1 check --workspace"
+    }
+}

@@ -1,0 +1,22 @@
+# Rust
+/target
+**/*.rs.bk
+
+# Node
+node_modules
+**/node_modules
+apps/ui/dist
+apps/ui/.vite
+
+# Local env
+.env
+.env.*
+
+# Temp
+.tmp-cef-rs-ref
+
+# IDE
+.idea
+.vscode
+*.code-workspace
+

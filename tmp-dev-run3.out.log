@@ -1,0 +1,7 @@
+
+> pulse@0.1.0 dev C:\Users\joshu\OneDrive\Desktop\pulse
+> powershell -NoProfile -ExecutionPolicy Bypass -File scripts/dev.ps1
+
+Starting Pulse UI dev server...
+Starting Pulse shell...
+Notice: running from an elevated terminal. Pulse adds '--do-not-de-elevate' in debug builds so CEF can stay in this session.

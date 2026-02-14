@@ -1,0 +1,35 @@
+   Compiling pulse-shell v0.1.0 (C:\Users\joshu\OneDrive\Desktop\pulse\apps\shell)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.91s
+     Running `target\debug\pulse-shell.exe --pulse-ui-url http://localhost:5173 --pulse-content-url https://www.microsoft.com/edge`
+Pulse startup env configured: PULSE_UI_URL='http://localhost:5173' PULSE_URL='https://www.microsoft.com/edge'
+Pulse CEF context initialized: runtime_style=ALLOY ui_url='http://localhost:5173' trusted_origin='http://localhost:5173'
+Invalid UTF-16 string
+Pulse browser created: role=UiChrome id=1 url=''
+Pulse host cmd ensure-tab: tab_id='tab-edge' initial_url='https://www.microsoft.com/edge'
+Invalid UTF-16 string
+Pulse browser created: role=WebContent id=2 url=''
+Pulse host cmd activate-tab: tab_id='tab-edge'
+Pulse host cmd set-content-bounds: x=354 y=127 width=1052 height=747
+Pulse host cmd ensure-tab: tab_id='tab-edge' initial_url='https://www.microsoft.com/edge'
+Pulse host cmd activate-tab: tab_id='tab-edge'
+Pulse host cmd set-content-bounds: x=354 y=127 width=1052 height=747
+[21624:45776:0212/022051.668:ERROR:gpu\ipc\client\command_buffer_proxy_impl.cc:122] ContextResult::kTransientFailure: Failed to send GpuControl.CreateCommandBuffer.
+[62248:7104:0212/022051.668:ERROR:gpu\ipc\client\command_buffer_proxy_impl.cc:122] ContextResult::kTransientFailure: Failed to send GpuControl.CreateCommandBuffer.
+[55632:7268:0212/022051.668:ERROR:content\browser\gpu\gpu_process_host.cc:1005] GPU process exited unexpectedly: exit_code=-2147483645
+[62248:7104:0212/022051.859:ERROR:gpu\ipc\client\command_buffer_proxy_impl.cc:122] ContextResult::kTransientFailure: Failed to send GpuControl.CreateCommandBuffer.
+[21624:45776:0212/022051.859:ERROR:gpu\ipc\client\command_buffer_proxy_impl.cc:122] ContextResult::kTransientFailure: Failed to send GpuControl.CreateCommandBuffer.
+[55632:7268:0212/022051.859:ERROR:content\browser\gpu\gpu_process_host.cc:1005] GPU process exited unexpectedly: exit_code=-2147483645
+[62248:7104:0212/022052.030:ERROR:gpu\ipc\client\command_buffer_proxy_impl.cc:122] ContextResult::kTransientFailure: Failed to send GpuControl.CreateCommandBuffer.
+[21624:45776:0212/022052.030:ERROR:gpu\ipc\client\command_buffer_proxy_impl.cc:122] ContextResult::kTransientFailure: Failed to send GpuControl.CreateCommandBuffer.
+[55632:7268:0212/022052.030:ERROR:content\browser\gpu\gpu_process_host.cc:1005] GPU process exited unexpectedly: exit_code=-2147483645
+[21624:47212:0212/022052.205:ERROR:gpu\ipc\client\command_buffer_proxy_impl.cc:122] ContextResult::kTransientFailure: Failed to send GpuControl.CreateCommandBuffer.
+[62248:82044:0212/022052.205:ERROR:gpu\ipc\client\command_buffer_proxy_impl.cc:122] ContextResult::kTransientFailure: Failed to send GpuControl.CreateCommandBuffer.
+Pulse host cmd set-content-bounds: x=354 y=127 width=1052 height=747
+Pulse host cmd set-content-bounds: x=354 y=127 width=1036 height=708
+Pulse host cmd set-content-bounds: x=354 y=127 width=1036 height=708
+[55632:7268:0212/022054.394:ERROR:components\device_event_log\device_event_log_impl.cc:198] [02:20:54.395] USB: usb_service_win.cc:105 SetupDiGetDeviceProperty({{A45C254E-DF1C-4EFD-8020-67D146A850E0}, 6}) failed: Element not found. (0x490)
+[55632:48616:0212/022054.546:ERROR:google_apis\gcm\engine\registration_request.cc:292] Registration response error message: DEPRECATED_ENDPOINT
+[55632:48616:0212/022101.632:ERROR:google_apis\gcm\engine\connection_factory_impl.cc:483] ConnectionHandler failed with net error: -2
+[55632:7268:0212/022101.635:ERROR:content\browser\network_service_instance_impl.cc:613] Network service crashed or was terminated, restarting service.
+[55632:7268:0212/022101.660:ERROR:content\browser\gpu\gpu_process_host.cc:1005] GPU process exited unexpectedly: exit_code=-1
+error: process didn't exit successfully: `target\debug\pulse-shell.exe --pulse-ui-url http://localhost:5173 --pulse-content-url https://www.microsoft.com/edge` (exit code: 0xffffffff)
