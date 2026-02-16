@@ -16,6 +16,7 @@ Pulse is an AI-powered creation and knowledge work engine that starts as a brows
 
 - `apps/shell`: Rust host process (CEF bootstrap, lifecycle, app shell)
 - `apps/ui`: React/Vite interface (sidebar, tabs, omnibox, workspace canvas)
+- `apps/site`: Next.js product website (Tailwind v4 + shadcn/ui)
 - `crates/pulse-core`: shared domain model (items, views, capabilities)
 - `docs`: architecture, roadmap, capabilities model
 - `.github/workflows`: CI and release scaffolding
@@ -30,6 +31,8 @@ Pulse is an AI-powered creation and knowledge work engine that starts as a brows
    - `pnpm install`
 4. Run UI + host together:
    - `pnpm dev`
+5. Run product site locally (optional):
+   - `pnpm dev:site`
 
 The host launches CEF with:
 - UI context: `http://localhost:5173` (`PULSE_UI_URL`)

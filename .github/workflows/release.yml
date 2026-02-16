@@ -2,21 +2,53 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (for example 0.2.0)"
+        required: true
   push:
     tags:
       - "v*"
+
+permissions:
+  contents: write
 
 jobs:
   build-windows:
     runs-on: windows-latest
     env:
       CARGO_TERM_COLOR: always
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Resolve release version
+        id: version
+        shell: pwsh
+        run: |
+          $inputVersion = "${{ github.event.inputs.version }}"
+          if (-not [string]::IsNullOrWhiteSpace($inputVersion)) {
+            $version = $inputVersion.Trim()
+          } else {
+            $tag = "${{ github.ref_name }}".Trim()
+            $version = $tag.TrimStart("v")
+          }
+
+          if ($version -notmatch "^\d+\.\d+\.\d+([\-+A-Za-z0-9\.]*)?$") {
+            throw "Resolved version '$version' is not semver-like. Use values like 0.2.0 or 0.2.0-beta.1."
+          }
+
+          "value=$version" >> $env:GITHUB_OUTPUT
+          "tag=v$version" >> $env:GITHUB_OUTPUT
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -29,24 +61,34 @@ jobs:
         with:
           version: 10
 
-      - name: Install deps
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile=false
 
       - name: Build UI
         run: pnpm --dir apps/ui build
 
       - name: Build Shell
+        env:
+          PULSE_UPDATE_URL: https://github.com/${{ github.repository }}/releases/latest/download
         run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/cargo-with-cef-env.ps1 build -p pulse-shell --release
 
-      - name: Package with Velopack (placeholder)
+      - name: Install Velopack CLI
+        shell: pwsh
         run: |
-          Write-Host "Integrate Velopack CLI here."
-          Write-Host "Expected output: installer + update packages."
+          dotnet tool install --global vpk
+          "$env:USERPROFILE\.dotnet\tools" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-      - name: Upload artifacts
+      - name: Package and upload release assets
+        shell: pwsh
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-windows-release.ps1 `
+            -Version "${{ steps.version.outputs.value }}" `
+            -GitHubRepo "${{ github.repository }}" `
+            -GitHubToken "${{ secrets.GITHUB_TOKEN }}" `
+            -GitHubReleaseTag "${{ steps.version.outputs.tag }}"
+
+      - name: Upload Velopack build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: pulse-windows
-          path: |
-            target/release/**
-            apps/ui/dist/**
+          name: pulse-windows-release
+          path: target/velopack/releases/**

@@ -37,5 +37,11 @@ jobs:
       - name: Typecheck UI
         run: pnpm --dir apps/ui build
 
+      - name: Lint Site
+        run: pnpm --dir apps/site lint
+
+      - name: Build Site
+        run: pnpm --dir apps/site build
+
       - name: Rust check
         run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/cargo-with-cef-env.ps1 check --workspace
