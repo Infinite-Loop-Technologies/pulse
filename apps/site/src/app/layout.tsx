@@ -14,8 +14,9 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Pulse Browser",
-  description: "AI-native browser shell with vertical tabs, native CEF sessions, and fast updates.",
+  title: "Pulse",
+  description:
+    "Pulse is the all-in-one workspace for browsing, files, docs, and building with AI side by side.",
 };
 
 export default function RootLayout({
@@ -24,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body className={`${spaceGrotesk.variable} ${ibmPlexMono.variable} antialiased`}>
         {children}
       </body>

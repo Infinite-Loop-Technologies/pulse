@@ -28,28 +28,63 @@
   --radius-xl: calc(var(--radius) + 4px);
   --font-sans: var(--font-space-grotesk);
   --font-mono: var(--font-ibm-plex-mono);
+  --animate-float: float 10s ease-in-out infinite;
+  --animate-reveal: reveal-up 0.8s ease-out both;
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  --animate-shine: shine var(--duration) infinite linear;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+
+  @keyframes marquee-vertical {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
+
+  @keyframes shine {
+    0% {
+      background-position: 0% 0%;
+    }
+    50% {
+      background-position: 100% 100%;
+    }
+    to {
+      background-position: 0% 0%;
+    }
+  }
 }
 
 :root {
   --radius: 0.95rem;
-  --background: oklch(0.986 0.008 80.27);
-  --foreground: oklch(0.232 0.02 258.18);
-  --card: oklch(0.998 0 0);
-  --card-foreground: oklch(0.232 0.02 258.18);
-  --popover: oklch(0.998 0 0);
-  --popover-foreground: oklch(0.232 0.02 258.18);
-  --primary: oklch(0.41 0.118 223.9);
-  --primary-foreground: oklch(0.98 0.006 83.5);
-  --secondary: oklch(0.926 0.025 88.4);
-  --secondary-foreground: oklch(0.312 0.028 256.9);
-  --muted: oklch(0.954 0.013 87.2);
-  --muted-foreground: oklch(0.56 0.02 257.1);
-  --accent: oklch(0.86 0.07 194.5);
-  --accent-foreground: oklch(0.25 0.03 247.1);
-  --destructive: oklch(0.608 0.204 25.2);
-  --border: oklch(0.876 0.018 84.5);
-  --input: oklch(0.896 0.019 84.5);
-  --ring: oklch(0.61 0.11 223.9);
+  --background: oklch(0.168 0.021 266.12);
+  --foreground: oklch(0.968 0.007 95.1);
+  --card: oklch(0.208 0.024 262.9);
+  --card-foreground: oklch(0.968 0.007 95.1);
+  --popover: oklch(0.208 0.024 262.9);
+  --popover-foreground: oklch(0.968 0.007 95.1);
+  --primary: oklch(0.74 0.121 199.8);
+  --primary-foreground: oklch(0.168 0.021 266.12);
+  --secondary: oklch(0.274 0.03 259.4);
+  --secondary-foreground: oklch(0.941 0.008 100.4);
+  --muted: oklch(0.252 0.025 259.8);
+  --muted-foreground: oklch(0.738 0.018 252.3);
+  --accent: oklch(0.332 0.042 219.5);
+  --accent-foreground: oklch(0.941 0.008 100.4);
+  --destructive: oklch(0.648 0.222 25.3);
+  --border: oklch(0.312 0.026 258.7);
+  --input: oklch(0.292 0.025 259.2);
+  --ring: oklch(0.69 0.115 199.8);
 }
 
 * {
@@ -59,16 +94,16 @@
 body {
   @apply bg-background text-foreground font-sans;
   background-image:
-    radial-gradient(circle at 15% 15%, rgba(113, 194, 216, 0.28) 0%, transparent 44%),
-    radial-gradient(circle at 88% 12%, rgba(232, 174, 113, 0.24) 0%, transparent 48%),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.58), rgba(248, 242, 231, 0.64));
+    radial-gradient(circle at 12% 12%, rgba(55, 168, 204, 0.16) 0%, transparent 46%),
+    radial-gradient(circle at 86% 10%, rgba(74, 120, 255, 0.18) 0%, transparent 44%),
+    linear-gradient(160deg, rgba(22, 24, 32, 1), rgba(16, 18, 25, 1));
   min-height: 100vh;
 }
 
 .grid-overlay {
   background-image:
-    linear-gradient(to right, rgba(68, 73, 86, 0.08) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(68, 73, 86, 0.08) 1px, transparent 1px);
+    linear-gradient(to right, rgba(153, 170, 196, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(153, 170, 196, 0.08) 1px, transparent 1px);
   background-size: 28px 28px;
 }
 
@@ -96,9 +131,9 @@ body {
 }
 
 .animate-float {
-  animation: float 10s ease-in-out infinite;
+  animation: var(--animate-float);
 }
 
 .animate-reveal {
-  animation: reveal-up 0.8s ease-out both;
+  animation: var(--animate-reveal);
 }

@@ -69,6 +69,63 @@ function Sync-CefRuntimeToTarget {
   }
 }
 
+function Get-CefRuntimeFromCargoBuildOut {
+  param(
+    [string]$TargetDir
+  )
+
+  $buildDir = Join-Path $TargetDir "build"
+  if (-not (Test-Path $buildDir)) {
+    return $null
+  }
+
+  $libcef = Get-ChildItem -Path $buildDir -Recurse -Filter "libcef.dll" -File -ErrorAction SilentlyContinue |
+    Where-Object { $_.FullName -like "*cef-dll-sys*" } |
+    Sort-Object LastWriteTime -Descending |
+    Select-Object -First 1
+
+  if (-not $libcef) {
+    return $null
+  }
+
+  return $libcef.Directory.FullName
+}
+
+function Ensure-CefRuntimeInTarget {
+  param(
+    [string]$TargetDir
+  )
+
+  $targetLibCef = Join-Path $TargetDir "libcef.dll"
+  if (Test-Path $targetLibCef) {
+    return
+  }
+
+  $runtimeSource = $null
+  if ($env:CEF_PATH -and (Test-Path (Join-Path $env:CEF_PATH "libcef.dll"))) {
+    $runtimeSource = $env:CEF_PATH
+  }
+
+  if (-not $runtimeSource) {
+    $runtimeSource = Get-CefRuntimeFromCargoBuildOut -TargetDir $TargetDir
+  }
+
+  if (-not $runtimeSource) {
+    throw @"
+CEF runtime files were not found after the cargo build.
+Expected 'libcef.dll' in '$TargetDir' or in Cargo build output under '$TargetDir\\build\\cef-dll-sys-*\\out'.
+Set CEF_PATH to a valid CEF runtime directory if automatic discovery fails.
+"@
+  }
+
+  Write-Host "Syncing CEF runtime from '$runtimeSource' to '$TargetDir'..."
+  Sync-CefRuntimeToTarget -CefPath $runtimeSource -TargetDir $TargetDir
+
+  if (-not (Test-Path $targetLibCef)) {
+    throw "CEF runtime sync failed. Missing '$targetLibCef'."
+  }
+}
+
 function Get-VsDevCmdPath {
   if ($env:VSDEVCMD_BAT -and (Test-Path $env:VSDEVCMD_BAT)) {
     return $env:VSDEVCMD_BAT
@@ -238,4 +295,9 @@ if ($cargoCommand -in @("run", "build")) {
 cargo @CargoArgs
 if ($LASTEXITCODE -ne 0) {
   throw "Cargo command failed with exit code $LASTEXITCODE."
+}
+
+if ($cargoCommand -in @("run", "build")) {
+  $targetDir = Join-Path $repoRoot "target\$profile"
+  Ensure-CefRuntimeInTarget -TargetDir $targetDir
 }
