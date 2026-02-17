@@ -69,6 +69,104 @@ function Sync-CefRuntimeToTarget {
   }
 }
 
+function Get-VsDevCmdPath {
+  if ($env:VSDEVCMD_BAT -and (Test-Path $env:VSDEVCMD_BAT)) {
+    return $env:VSDEVCMD_BAT
+  }
+
+  $vswhere = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio\\Installer\\vswhere.exe"
+  if (Test-Path $vswhere) {
+    try {
+      $installPath = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+      if ($installPath) {
+        $candidate = Join-Path $installPath "Common7\\Tools\\VsDevCmd.bat"
+        if (Test-Path $candidate) {
+          return $candidate
+        }
+      }
+    }
+    catch {
+      # Fall through to static candidates.
+    }
+  }
+
+  $candidates = @(
+    "$env:ProgramFiles\\Microsoft Visual Studio\\2022\\BuildTools\\Common7\\Tools\\VsDevCmd.bat",
+    "$env:ProgramFiles\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat",
+    "$env:ProgramFiles\\Microsoft Visual Studio\\2022\\Professional\\Common7\\Tools\\VsDevCmd.bat",
+    "$env:ProgramFiles\\Microsoft Visual Studio\\2022\\Enterprise\\Common7\\Tools\\VsDevCmd.bat",
+    "$env:ProgramFiles\\Microsoft Visual Studio\\2022\\Preview\\Common7\\Tools\\VsDevCmd.bat",
+    "$env:ProgramFiles\\Microsoft Visual Studio\\2019\\BuildTools\\Common7\\Tools\\VsDevCmd.bat",
+    "$env:ProgramFiles\\Microsoft Visual Studio\\2019\\Community\\Common7\\Tools\\VsDevCmd.bat"
+  )
+
+  return $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+}
+
+function Import-BatchEnvironment {
+  param(
+    [Parameter(Mandatory = $true)]
+    [string]$BatchPath,
+    [string]$BatchArgs = ""
+  )
+
+  if (-not (Test-Path $BatchPath)) {
+    throw "Batch file not found: $BatchPath"
+  }
+
+  $command = if ([string]::IsNullOrWhiteSpace($BatchArgs)) {
+    "call `"$BatchPath`" >nul && set"
+  } else {
+    "call `"$BatchPath`" $BatchArgs >nul && set"
+  }
+
+  $lines = & cmd.exe /d /s /c $command
+  if ($LASTEXITCODE -ne 0) {
+    throw "Failed to execute '$BatchPath'."
+  }
+
+  foreach ($line in $lines) {
+    if ([string]::IsNullOrWhiteSpace($line)) {
+      continue
+    }
+    $separatorIndex = $line.IndexOf("=")
+    if ($separatorIndex -le 0) {
+      continue
+    }
+    $name = $line.Substring(0, $separatorIndex)
+    $value = $line.Substring($separatorIndex + 1)
+    Set-Item -Path "Env:$name" -Value $value
+  }
+}
+
+function Ensure-MsvcToolchain {
+  $cl = Get-Command cl.exe -ErrorAction SilentlyContinue
+  $link = Get-Command link.exe -ErrorAction SilentlyContinue
+  if ($cl -and $link) {
+    return
+  }
+
+  $vsDevCmd = Get-VsDevCmdPath
+  if (-not $vsDevCmd) {
+    throw @"
+MSVC toolchain not found (missing cl.exe/link.exe).
+Install Visual Studio Build Tools 2022 with:
+- Workload: Desktop development with C++
+- Component: MSVC v143 - VS 2022 C++ x64/x86 build tools
+- Component: Windows 10/11 SDK
+"@
+  }
+
+  Write-Host "Loading MSVC toolchain from '$vsDevCmd'..."
+  Import-BatchEnvironment -BatchPath $vsDevCmd -BatchArgs "-no_logo -arch=x64 -host_arch=x64"
+
+  $cl = Get-Command cl.exe -ErrorAction SilentlyContinue
+  $link = Get-Command link.exe -ErrorAction SilentlyContinue
+  if (-not $cl -or -not $link) {
+    throw "MSVC toolchain initialization failed. cl.exe or link.exe is still unavailable."
+  }
+}
+
 $requiredCefBuild = "143.0.10"
 $cefCandidates = @()
 if ($env:CEF_PATH -and -not [string]::IsNullOrWhiteSpace($env:CEF_PATH)) {
@@ -95,6 +193,8 @@ if ($compatibleCefPath) {
 if ($env:CEF_PATH -and $env:PATH -notlike "*$($env:CEF_PATH)*") {
   $env:PATH = "$($env:PATH);$($env:CEF_PATH)"
 }
+
+Ensure-MsvcToolchain
 
 if (-not $env:CMAKE_MAKE_PROGRAM -or -not (Test-Path $env:CMAKE_MAKE_PROGRAM)) {
   $candidates = @(

@@ -6,7 +6,7 @@
 mod shared;
 
 use anyhow::{Result, anyhow};
-use velopack::{UpdateManager, VelopackApp, sources::HttpSource};
+use velopack::{UpdateCheck, UpdateManager, VelopackApp, sources::HttpSource};
 
 const DEFAULT_DEV_UI_URL: &str = "http://localhost:5173";
 const COMPILED_UPDATE_URL: Option<&str> = option_env!("PULSE_UPDATE_URL");
@@ -36,12 +36,18 @@ fn maybe_check_for_updates_in_background() {
     };
 
     std::thread::spawn(move || {
-        let source = HttpSource::new(update_url, None);
-        let update_manager = UpdateManager::new(source, None, None);
+        let source = HttpSource::new(update_url);
+        let update_manager = match UpdateManager::new(source, None, None) {
+            Ok(manager) => manager,
+            Err(err) => {
+                eprintln!("Pulse updater warning: failed to initialize update manager: {err}");
+                return;
+            }
+        };
 
         let available_update = match update_manager.check_for_updates() {
-            Ok(Some(update)) => update,
-            Ok(None) => return,
+            Ok(UpdateCheck::UpdateAvailable(update)) => update,
+            Ok(UpdateCheck::RemoteIsEmpty) | Ok(UpdateCheck::NoUpdateAvailable) => return,
             Err(err) => {
                 eprintln!("Pulse updater warning: failed to check for updates: {err}");
                 return;
@@ -53,14 +59,21 @@ fn maybe_check_for_updates_in_background() {
             return;
         }
 
-        let _ = update_manager.wait_exit_then_apply_updates(&available_update, true);
+        if let Err(err) = update_manager.wait_exit_then_apply_updates(
+            &available_update,
+            true,
+            true,
+            Vec::<String>::new(),
+        ) {
+            eprintln!("Pulse updater warning: failed to stage update apply: {err}");
+        }
     });
 }
 
 fn resolve_update_url() -> Option<String> {
     std::env::var("PULSE_UPDATE_URL")
         .ok()
-        .and_then(non_empty)
+        .and_then(non_empty_owned)
         .or_else(|| COMPILED_UPDATE_URL.and_then(non_empty).map(str::to_string))
 }
 
@@ -70,6 +83,15 @@ fn non_empty(value: &str) -> Option<&str> {
         None
     } else {
         Some(trimmed)
+    }
+}
+
+fn non_empty_owned(value: String) -> Option<String> {
+    let trimmed = value.trim();
+    if trimmed.is_empty() {
+        None
+    } else {
+        Some(trimmed.to_string())
     }
 }
 
