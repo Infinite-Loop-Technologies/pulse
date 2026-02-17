@@ -6,7 +6,7 @@ param(
   [string]$PackAuthors = "Pulse Contributors",
   [string]$Channel = "win",
   [string]$MainExe = "pulse-shell.exe",
-  [string]$Framework = "net0",
+  [string]$Framework = "vcredist143-x64",
   [string]$IconPath = "heartbeat.ico",
   [string]$GitHubRepo = "",
   [string]$GitHubToken = "",
@@ -92,10 +92,13 @@ $packArgs = @(
   "--packAuthors", $PackAuthors,
   "--packDir", $packDir,
   "--mainExe", $MainExe,
-  "--framework", $Framework,
   "--channel", $Channel,
   "--outputDir", $outputDir
 )
+
+if (-not [string]::IsNullOrWhiteSpace($Framework)) {
+  $packArgs += @("--framework", $Framework)
+}
 
 if (Test-Path $iconFile) {
   $packArgs += @("--icon", $iconFile)
