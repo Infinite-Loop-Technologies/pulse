@@ -136,3 +136,6 @@ if ($cargoCommand -in @("run", "build")) {
 }
 
 cargo @CargoArgs
+if ($LASTEXITCODE -ne 0) {
+  throw "Cargo command failed with exit code $LASTEXITCODE."
+}

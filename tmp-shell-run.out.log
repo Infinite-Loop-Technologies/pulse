@@ -1,5 +1,0 @@
-
-> pulse@0.1.0 dev:shell C:\Users\joshu\OneDrive\Desktop\pulse
-> powershell -NoProfile -ExecutionPolicy Bypass -File scripts/cargo-with-cef-env.ps1 run -p pulse-shell -- --pulse-ui-url http://localhost:5173 --pulse-content-url https://www.microsoft.com/edge
-
-Notice: running from an elevated terminal. Pulse adds '--do-not-de-elevate' in debug builds so CEF can stay in this session.
