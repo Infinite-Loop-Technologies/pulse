@@ -25,7 +25,7 @@ Download button behavior:
 
 1. If `NEXT_PUBLIC_WINDOWS_INSTALLER_URL` is set, it uses that URL.
 2. Otherwise it falls back to:
-   `https://github.com/<NEXT_PUBLIC_GITHUB_REPO>/releases/latest/download/Pulse-Setup.exe`
+   `https://github.com/<NEXT_PUBLIC_GITHUB_REPO>/releases/latest/download/Pulse-win-Setup.exe`
 
 ## Build
 

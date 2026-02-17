@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 const githubRepo = process.env.NEXT_PUBLIC_GITHUB_REPO ?? "joshu/pulse";
 const windowsInstallerUrl =
   process.env.NEXT_PUBLIC_WINDOWS_INSTALLER_URL ??
-  `https://github.com/${githubRepo}/releases/latest/download/Pulse-Setup.exe`;
+  `https://github.com/${githubRepo}/releases/latest/download/Pulse-win-Setup.exe`;
 
 const highlights = [
   {
@@ -84,7 +84,7 @@ export default function Home() {
             </p>
             <div className="mt-5 rounded-2xl border border-border bg-card p-4">
               <p className="font-mono text-xs text-muted-foreground">Latest stable endpoint</p>
-              <p className="mt-2 text-sm font-medium leading-relaxed">/releases/latest/download/Pulse-Setup.exe</p>
+              <p className="mt-2 text-sm font-medium leading-relaxed">/releases/latest/download/Pulse-win-Setup.exe</p>
             </div>
             <Button asChild variant="ghost" className="mt-4 h-auto px-0 text-sm">
               <a href={`https://github.com/${githubRepo}/releases`} target="_blank" rel="noreferrer">

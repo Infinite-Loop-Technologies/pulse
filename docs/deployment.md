@@ -18,7 +18,7 @@ Pulse now has two delivery tracks:
    - CEF runtime files from `target/release`
    - UI bundle in `ui/`
 4. Runs `vpk pack` to produce:
-   - `Pulse-Setup.exe`
+   - `Pulse-win-Setup.exe`
    - `releases.win.json`
    - `*.nupkg` update packages (full + delta when previous releases are available)
 5. Uploads Velopack outputs to GitHub Releases with `vpk upload github`.
@@ -49,7 +49,7 @@ At runtime, the shell checks `PULSE_UPDATE_URL` environment variable first; othe
 
 If `NEXT_PUBLIC_WINDOWS_INSTALLER_URL` is not set, the button defaults to:
 
-`https://github.com/<NEXT_PUBLIC_GITHUB_REPO>/releases/latest/download/Pulse-Setup.exe`
+`https://github.com/<NEXT_PUBLIC_GITHUB_REPO>/releases/latest/download/Pulse-win-Setup.exe`
 
 ### Vercel auto deploy vs GitHub Action
 
